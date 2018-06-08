@@ -1,0 +1,246 @@
+@if(myCart(Cart::contents(true), 'totalPrice')==0)
+                <div class="col-md-12" style="border:1px dotted #ccc;border-radius: 3px;">
+                    <i class="fa fa-shopping-cart bossepet" ></i>
+                    <div class="bossepettext">
+                        Alışveriş Sepetiniz Boş.
+                    </div>
+                    <div class="bossepetspot">
+                        Biraz gezinmeye ne dersin?<br />
+                        Sitemizde bulunan ürünler içinden sana uygun bir şeyler olduğuna eminiz.
+                    </div>
+                    <a style="color:#fff;" class="bossepetbuton" href="{!! url('/') !!}">Alışverişe Başla</a>
+                </div>
+            @else
+            <section>
+                <div class="wizard">
+                    <div class="tab-content">
+                        <div class="tab-pane active">
+                            @if(Session::has('message'))
+                                <div class="alert alert-info">{!! Session::get('message') !!}</div>
+                            @endif
+
+                            @if(Auth::check()) <!-- Üye Giriş Yaptıktan sonraki alan  -->
+                                @if(myCart(Cart::contents(true), 'totalPrice')==0)
+                                    <div class="col-md-12" style="border:1px dotted #ccc;border-radius: 3px;">
+                                        <i class="fa fa-shopping-cart bossepet" ></i>
+                                        <div class="bossepettext">
+                                            Alışveriş Sepetiniz Boş.
+                                        </div>
+                                        <div class="bossepetspot">
+                                            Biraz gezinmeye ne dersin?<br />
+                                            Sitemizde bulunan ürünler içinden sana uygun bir şeyler olduğuna eminiz.
+                                        </div>
+                                        <a style="color:#fff;" class="bossepetbuton" href="{!! url('/') !!}">Alışverişe Başla</a>
+                                    </div>
+                                @else
+                                    <div class="col-md-9">
+                                        <div class="page-content checkout-page">
+
+                                            <div class="wizard-inner">
+                                                <div class="teslimat">
+                                                    <i class="fa fa-archive"></i> <br/>
+                                                    <p style="width: 199px;font-size: 15px;color: #ffa500;margin-top: 14px;margin-left: -47px;">Teslimat Bilgileri</p>
+                                                </div>
+                                                <div class="odeme">
+                                                    <i class="fa fa-credit-card"></i> <br/>
+                                                    <p style="width: 199px;font-size: 15px;color: #ccc;margin-top: 14px;margin-left: -47px;">Ödeme Bilgileri</p>
+                                                </div>
+                                                <div class="connecting-line"></div>
+                                                <br/><br/><br/><br/>
+                                            </div>
+                                            {!! Form::open(['action'=>'Site\MyCartController@postBuy', 'method'=>'POST','id'=>"satis-form"]) !!}
+                                            {!! Form::hidden('OdemeTuru', 1) !!}
+
+                                            {!! Form::hidden('AdresAdSoyad', null) !!}
+                                            {!! Form::hidden('AdresAdres', null) !!}
+                                            {!! Form::hidden('IlID', null) !!}
+                                            {!! Form::hidden('IlceID', null) !!}
+                                            {!! Form::hidden('AdresTelefon1', null) !!}
+                                            {!! Form::hidden('AdresCep', null) !!}
+                                            {!! Form::hidden('FaturaUnvan', null) !!}
+                                            {!! Form::hidden('FaturaAdres', null) !!}
+                                            {!! Form::hidden('FaturaIlID', null) !!}
+                                            {!! Form::hidden('FaturaIlceID', null) !!}
+                                            {!! Form::hidden('FaturaTelefon1', null) !!}
+                                            {!! Form::hidden('FaturaCep', null) !!}
+                                            {!! Form::hidden('FaturaVergiDaire', null) !!}
+                                            {!! Form::hidden('FaturaVergiNumara', null) !!}
+
+                                            <div class="panel panel-default">
+                                                <div class="panel-body">
+                                                    <div class="page-header m-t-0" style="margin-top:0"><h3>Adres Seçme</h3></div>
+
+                                                    <div class="col-md-6 form-group">
+                                                        <label for="adres_liste_sec">Teslimat Teslim Adres Seçiniz</label>
+                                                        {!! Form::select('adres_liste_sec', $adresler, null, ['class'=>'form-control adres_liste_sec','required'=>1,'style'=>'height:130px;']) !!}
+                                                    </div>
+                                                    <div class="col-md-6 form-group">
+                                                        <label for="fatura_liste_sec">Fatura Teslim Adres Seçiniz</label>
+                                                        {!! Form::select('fatura_liste_sec', $adresler, null, ['class'=>'form-control fatura_liste_sec','required'=>1,'style'=>'height:130px;']) !!}
+                                                    </div>
+                                                    <br/>
+                                                    <button type="button" style="width:390px;margin-left:14px;color:#2A2C2E;background: #f0f0f0;border-radius: 2px;border: 1px solid #ccc;height: 35px;font-size:15px;" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">
+                                                        Yeni Teslimat Adresi Ekle
+                                                    </button>
+                                                    <button style="margin-left:26px;width:391px;color:#2A2C2E;background: #f0f0f0;border-radius: 2px;border: 1px solid #ccc;height: 35px;font-size:15px;" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                                                        Yeni Fatura Adresi Ekle
+                                                    </button>
+                                                </div><!-- panel-body -->
+                                            </div><!-- panel-default -->
+                                            <div class="panel panel-default">
+                                                <div class="panel-body">
+                                                    <div class="page-header m-t-0" style="margin-top:0"><h3>Kargo</h3></div>
+
+                                                    <div class="col-md-3">
+                                                        <img src="{!! url('upload/images/ups-kargo.jpg') !!}">
+                                                    </div>
+                                                    <div class="col-md-9">
+                                                        Derinet güvencesiyle, siparişin en kısa zamanda adresinde.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="margin-top: 109px;">
+                                        <table class="table table-striped">
+                                            <tbody>
+                                            <tr>
+                                                <th>
+                                                    <div style="float:right;color:#f28b00;font-size: 16px;font-weight: bold;">Sipariş Özeti</div>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">
+                                                    <div style="float:right;">{!! Cart::totalItems() !!} Ürün</div>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">
+                                                    <div style="float:right;">Ödenecek Tutar</div>
+                                                    <br/>
+                                                    <div style="    text-align: right;font-size:32px;font-weight: bold;">{!! myCart(Cart::contents(true), 'totalPrice') !!} TL</div>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td><button style="background: #f28b00;color: #fff;padding: 12px;border-radius: 4px;margin-left: 39px;" type="submit" class="button pull-right">Devam Et <i
+                                                                style="font-size: 24px;margin-top: -7px;font-weight: bold;margin-left: 8px;" class="fa fa-angle-right"></i></button></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                            @endif
+                            {!! Form::close() !!}
+                        </div>
+
+                    @else <!-- Üye Giriş Yapmadan Önceki Alan  -->
+
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Üye Girişi</a></li>
+                            <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Üye Olmadan Satın Al</a></li>
+                        </ul>
+
+                        <br />
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="home">
+                                @if(Session::has('message'))
+                                    <div class="alert alert-success">
+                                        {!! Session::get('message') !!}
+                                    </div>
+                                @endif
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="box-authentication">
+                                            {!! Form::open(['action'=>'Site\MemberController@postRegister', 'method'=>'POST']) !!}                                <h3>Yeni Üye Ol</h3>
+                                            <hr>
+                                            {!! Form::label('name', 'Ad Soyad') !!}
+                                            {!! Form::text('name', null, ['required'=>1,'class'=>'form-control']) !!}
+                                            {!! Form::label('email', 'E-Mail Adresi') !!}
+                                            {!! Form::email('email', null, ['required'=>1,'class'=>'form-control']) !!}
+                                            {!! Form::label('password', 'Şifre') !!}
+                                            {!! Form::password('password', ['required'=>1,'class'=>'form-control']) !!}
+                                            {!! Form::label('confirm_password', 'Şifre Tekrar') !!}
+                                            {!! Form::password('confirm_password', ['required'=>1,'class'=>'form-control']) !!}
+
+                                            <button type="submit" class="button"><i class="fa fa-lock"></i> Üye Ol</button>
+                                            {!! Form::close() !!}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="box-authentication">
+                                            {!! Form::open(['action'=>'Site\MemberController@postLogin', 'method'=>'POST']) !!}
+                                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                            <h3>Üye Girişi</h3>
+                                            <a href="{!!url('uye/facebooklogin')!!}"><img src="{!! url('assets/flogin.png')  !!}" alt="Facebook ile bağlan" style="margin:10px 0px;"/></a>
+                                            <a href="{!!url('uye/twitterlogin')!!}"><img src="{!! url('assets/tlogin.png') !!}" alt="Facebook ile bağlan" style="margin:10px 0px;"/></a>
+                                            <p style="color:#666">- veya -</p>
+                                            <br>
+                                            {!! Form::label('email', 'E-Mail Adresi') !!}
+                                            {!! Form::email('email', null, ['required'=>1,'class'=>'form-control']) !!}
+                                            {!! Form::label('password', 'Şifre') !!}
+                                            {!! Form::password('password', ['required'=>1,'class'=>'form-control']) !!}
+                                            <div style="margin-top:15px"></div>
+                                            <button type="submit" class="btn btn-success btn-xl pull-left" style="margin-right:10px"><i class="fa fa-lock"></i> Giriş Yap</button>
+                                            {!! Form::close() !!}
+                                            <a href="{!!url('uye/password')!!}"><button class="btn btn-primary btn-xl pull-left"><i class="fa fa-lock"></i> Şifremi Unuttum</button></a>
+                                        </div>
+                                        @if(Session::has('msgError'))
+                                            <div class="alert alert-danger">
+                                                {!! Session::get('msgError') !!}
+                                            </div>
+                                        @elseif(Session::has('msgSuccess'))
+                                            <div class="alert alert-success">
+                                                {!! Session::get('msgSuccess') !!}
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+                            <div role="tabpanel" class="tab-pane" id="profile">
+                                {!! Form::open(['action'=>'Site\MyCartController@postBuy', 'method'=>'POST']) !!}
+                                {!! Form::hidden('OdemeTuru', 1) !!}
+                                {!! Form::hidden('AdresAdSoyad', null) !!}
+                                {!! Form::hidden('AdresAdres', null) !!}
+                                {!! Form::hidden('IlID', null) !!}
+                                {!! Form::hidden('IlceID', null) !!}
+                                {!! Form::hidden('AdresTelefon1', null) !!}
+                                {!! Form::hidden('AdresCep', null) !!}
+                                {!! Form::hidden('FaturaUnvan', null) !!}
+                                {!! Form::hidden('FaturaAdres', null) !!}
+                                {!! Form::hidden('FaturaIlID', null) !!}
+                                {!! Form::hidden('FaturaIlceID', null) !!}
+                                {!! Form::hidden('FaturaTelefon1', null) !!}
+                                {!! Form::hidden('FaturaCep', null) !!}
+                                {!! Form::hidden('FaturaVergiDaire', null) !!}
+                                {!! Form::hidden('FaturaVergiNumara', null) !!}
+                                @include(theme('member.adress-form-satinal'))
+                                {!! Form::close() !!}
+
+
+
+
+
+
+
+
+
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+
+
+                        @endif
+                    </div>
+                </div>
+             </section>
+            @endif
